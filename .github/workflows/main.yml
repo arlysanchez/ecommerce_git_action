@@ -20,8 +20,6 @@ env:
 jobs:
   build-and-deploy:
     name: Build and Deploy Locally
-    
-    # 🎯 ¡Paso Clave! Usa el runner que acabas de configurar.
     runs-on: self-hosted
 
     steps:
@@ -42,7 +40,6 @@ jobs:
         run: mvn -B clean package -DskipTests
 
       # 4. Desplegar la aplicación usando Docker Compose
-      # Estos comandos se ejecutan directamente en tu terminal de WSL2
       - name: Deploy with Docker Compose
         run: |
           echo "✅ Iniciando despliegue en el runner local..."
@@ -63,7 +60,7 @@ jobs:
           sleep 30
           
           echo "💾 Inicializando base de datos desde init.sql..."
-          docker exec -i ${{ env.DB_CONTAINER_NAME }} mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }} ${{ env.DB_NAME }} < ../sql/init.sql
+          cat ../sql/init.sql | docker exec -i ${{ env.DB_CONTAINER_NAME }} mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }} ${{ env.DB_NAME }}
 
           # 4️⃣ Verificamos el estado final
           echo "🔍 Verificando estado de los contenedores..."
